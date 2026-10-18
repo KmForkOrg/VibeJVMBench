@@ -1,0 +1,194 @@
+{
+  "title": "VibeJVMBench submission result",
+  "description": "One file at jvms/<target-name>/<timestamp>.json: everything one bench run (bench/run.py and/or bench/mc/run.py) measured for one target JVM/toolchain build. schema_version 1.",
+  "type": "object",
+  "required": ["schema_version", "target", "machine", "generated_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+
+    "target": {
+      "type": "object",
+      "description": "Identity of the JVM/toolchain under test",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "description": "Matches the jvms/<name>/ directory this file lives under."
+        },
+        "description": { "type": "string" },
+        "source_url": { "type": "string", "format": "uri" },
+        "version": {
+          "type": "string",
+          "description": "Free-text build identity: a git commit, release tag, or similar. Not used for sorting/filtering, only display/provenance."
+        },
+        "is_java_launcher": {
+          "type": "boolean",
+          "description": "True iff measured with --target-is-java: target is a plain java-style launcher, not a compiler/packager built from source for this run."
+        },
+        "binary_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+
+    "machine": {
+      "type": "object",
+      "required": ["hostname", "os", "arch"],
+      "additionalProperties": false,
+      "properties": {
+        "hostname": { "type": "string" },
+        "os": { "type": "string" },
+        "arch": { "type": "string" },
+        "cpu": { "type": "string" },
+        "memory_gb": { "type": "number", "exclusiveMinimum": 0 },
+        "reference_jdks": {
+          "type": "object",
+          "description": "Per reference engine (g1/zgc/graal), the contents of that JDK's release file.",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC. The *filename* this is saved under must be colon-free, e.g. 2026-10-17T17-43-00Z.json; this field keeps the normal colon-bearing ISO-8601 form."
+    },
+
+    "harness_commit": {
+      "type": "string",
+      "description": "Free-text provenance for the benchmark harness itself (e.g. a git commit of the VibeJVMBench repo), not the target."
+    },
+
+    "run": {
+      "type": "object",
+      "description": "The invocation that produced the mc/ scenarios below, if any (bench/mc/run.py §9.4).",
+      "additionalProperties": false,
+      "properties": {
+        "runs": { "type": "integer", "minimum": 1 },
+        "seed": { "type": "integer" }
+      }
+    },
+
+    "scenarios": {
+      "type": "object",
+      "description": "scenario-name -> scenario. Current scenario names from: worldgen, tick, datagen, upgrade. New scenario names may appear without a schema change.",
+      "additionalProperties": { "$ref": "#/$defs/scenario" }
+    },
+
+    "startup_ms": {
+      "$ref": "#/$defs/metric",
+      "description": "bench/run.py §6.8: median wall-clock process-start latency, 5 samples, lower_is_better always true."
+    },
+
+    "vs_hotspot": {
+      "type": "object",
+      "description": "bench/run.py results relative to HotSpot G1 measured in the same run on the same machine. This, not raw timings, is what the results site compares across submissions.",
+      "additionalProperties": false,
+      "properties": {
+        "startup": { "$ref": "#/$defs/relative" },
+        "groups": {
+          "type": "object",
+          "description": "Geometric mean per benchmark group (main, vector, runtime, real, suites) plus micro (main+vector+runtime).",
+          "additionalProperties": { "$ref": "#/$defs/relative" }
+        },
+        "benchmarks": {
+          "type": "object",
+          "description": "benchmark-name -> relative, for every benchmark where both target and HotSpot G1 succeeded.",
+          "additionalProperties": { "$ref": "#/$defs/relative" }
+        }
+      }
+    },
+
+    "harness": {
+      "type": "object",
+      "description": "Optional: bench/run.py's own microbenchmark/suite results for this target, reusing results.json shape verbatim (not re-specified here).",
+      "additionalProperties": true
+    }
+  },
+
+  "$defs": {
+    "relative": {
+      "type": "object",
+      "description": "Target performance relative to HotSpot G1 measured in the same run on the same machine. ratio > 1 (pct > 0) always means the target did better, whichever direction the underlying metric runs: hotspot/target for lower-is-better metrics, target/hotspot for higher-is-better ones.",
+      "required": ["ratio", "pct"],
+      "additionalProperties": false,
+      "properties": {
+        "ratio": { "type": "number", "exclusiveMinimum": 0 },
+        "pct": { "type": "number", "description": "(ratio - 1) * 100." },
+        "n": { "type": "integer", "minimum": 1, "description": "For geometric means: how many ratios were combined." }
+      }
+    },
+
+    "metric": {
+      "type": "object",
+      "description": "One statistically-summarized metric: rig.summarize() over an engine's successful per-run samples.",
+      "required": ["median", "n", "lower_is_better"],
+      "additionalProperties": false,
+      "properties": {
+        "median": { "type": "number" },
+        "ci_low": { "type": "number", "description": "2.5th percentile of the bootstrap medians." },
+        "ci_high": { "type": "number", "description": "97.5th percentile of the bootstrap medians." },
+        "n": { "type": "integer", "minimum": 0, "description": "Successful sample count feeding this metric." },
+        "lower_is_better": { "type": "boolean" },
+        "samples": {
+          "type": "array",
+          "items": { "type": "number" },
+          "description": "Optional raw per-run values, for transparency/re-analysis. May be omitted for large sample counts."
+        }
+      }
+    },
+
+    "verdict": {
+      "type": "object",
+      "description": "rig.verdict() of this submission's target against a named reference baseline for one metric.",
+      "required": ["baseline", "win", "ratio"],
+      "additionalProperties": false,
+      "properties": {
+        "baseline": {
+          "type": "string",
+          "description": "Which reference engine this target was compared to, e.g. hotspot-g1, hotspot-zgc, graal."
+        },
+        "win": {
+          "type": "boolean",
+          "description": "True iff the target's confidence interval clears the baseline's median entirely."
+        },
+        "ratio": { "type": "number", "exclusiveMinimum": 0, "description": "target.median / baseline.median." }
+      }
+    },
+
+    "scenario": {
+      "type": "object",
+      "description": "One bench/mc scenario's results for the target, plus however many reference engines were also run in the same invocation.",
+      "required": ["target_metrics"],
+      "additionalProperties": false,
+      "properties": {
+        "failed_runs": { "type": "integer", "minimum": 0, "description": "Count of this scenario's runs that errored for the target." },
+        "target_metrics": {
+          "type": "object",
+          "description": "metric-name -> metric, for the target engine. Metric names are scenario-specific and open-ended; every scenario also carries exit, rss_mb, gc_pauses, gc_pause_max_ms, gc_pause_total_ms, gc_full_pauses, gc_full_pause_max_ms from ended()).",
+          "additionalProperties": { "$ref": "#/$defs/metric" }
+        },
+        "reference_metrics": {
+          "type": "object",
+          "description": "reference-engine-name -> (metric-name -> metric), for whichever of hotspot-g1/hotspot-zgc/graal/target-base were also measured in this invocation.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/$defs/metric" }
+          }
+        },
+        "verdicts": {
+          "type": "object",
+          "description": "metric-name -> verdict, for metrics where a baseline comparison was computed.",
+          "additionalProperties": { "$ref": "#/$defs/verdict" }
+        },
+        "vs_hotspot": {
+          "type": "object",
+          "description": "metric-name -> target median relative to the hotspot-g1 median from this same invocation; what the results site compares.",
+          "additionalProperties": { "$ref": "#/$defs/relative" }
+        }
+      }
+    }
+  }
+}

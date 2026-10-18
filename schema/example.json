@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "target": {
+    "name": "vibec",
+    "description": "A toy AOT JVM compiler generated mostly by an LLM, for fun",
+    "source_url": "https://github.com/example/vibec",
+    "version": "a1b2c3d",
+    "is_java_launcher": false,
+    "binary_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "machine": {
+    "hostname": "bench-node-1",
+    "os": "linux",
+    "arch": "x86_64",
+    "cpu": "AMD Ryzen 9 7950X",
+    "memory_gb": 64,
+    "reference_jdks": {
+      "g1": "JAVA_VERSION=\"25\"\nIMPLEMENTOR=\"Eclipse Adoptium\"",
+      "graal": "JAVA_VERSION=\"25.0.4\"\nIMPLEMENTOR=\"GraalVM Community\""
+    }
+  },
+  "generated_at": "2026-10-17T17:43:00Z",
+  "harness_commit": "9f0e1d2",
+  "run": { "runs": 10, "seed": 1 },
+  "startup_ms": { "median": 182.0, "n": 5, "lower_is_better": true },
+  "scenarios": {
+    "worldgen": {
+      "target_metrics": {
+        "worldgen_s": { "median": 11.4, "ci_low": 10.9, "ci_high": 12.1, "n": 10, "lower_is_better": true },
+        "chunks_per_s": { "median": 361.2, "ci_low": 340.0, "ci_high": 378.5, "n": 10, "lower_is_better": false },
+        "rss_mb": { "median": 812.0, "n": 10, "lower_is_better": true },
+        "gc_pause_total_ms": { "median": 420.0, "n": 10, "lower_is_better": true }
+      },
+      "reference_metrics": {
+        "hotspot-g1": {
+          "worldgen_s": { "median": 9.8, "n": 10, "lower_is_better": true }
+        }
+      },
+      "verdicts": {
+        "worldgen_s": { "baseline": "hotspot-g1", "win": false, "ratio": 1.16 }
+      }
+    }
+  }
+}
