@@ -1,0 +1,1010 @@
+{
+  "schema_version": 1,
+  "target": {
+    "name": "example",
+    "is_java_launcher": true,
+    "binary_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "machine": {
+    "hostname": "examplebox",
+    "os": "linux",
+    "arch": "x86_64",
+    "reference_jdks": {
+      "g1": "IMPLEMENTOR=\"Eclipse Adoptium\"\nIMPLEMENTOR_VERSION=\"Temurin-25+36\"\nJAVA_RUNTIME_VERSION=\"25+36-LTS\"\nJAVA_VERSION=\"25\"\nJAVA_VERSION_DATE=\"2025-09-16\"\nLIBC=\"gnu\"\nMODULES=\"java.base java.compiler java.datatransfer java.xml java.prefs java.desktop java.instrument java.logging java.management java.security.sasl java.naming java.rmi java.management.rmi java.net.http java.scripting java.security.jgss java.transaction.xa java.sql java.sql.rowset java.xml.crypto java.se java.smartcardio jdk.accessibility jdk.internal.jvmstat jdk.attach jdk.charsets jdk.internal.opt jdk.zipfs jdk.compiler jdk.crypto.cryptoki jdk.crypto.ec jdk.dynalink jdk.internal.ed jdk.editpad jdk.internal.vm.ci jdk.graal.compiler jdk.graal.compiler.management jdk.hotspot.agent jdk.httpserver jdk.incubator.vector jdk.internal.le jdk.internal.md jdk.jartool jdk.javadoc jdk.jcmd jdk.management jdk.management.agent jdk.jconsole jdk.jdeps jdk.jdwp.agent jdk.jdi jdk.jfr jdk.jlink jdk.jpackage jdk.jshell jdk.jsobject jdk.jstatd jdk.localedata jdk.management.jfr jdk.naming.dns jdk.naming.rmi jdk.net jdk.nio.mapmode jdk.sctp jdk.security.auth jdk.security.jgss jdk.unsupported jdk.unsupported.desktop jdk.xml.dom\"\nOS_ARCH=\"x86_64\"\nOS_NAME=\"Linux\"\nSOURCE=\".:git:ef82ae723551\"\nBUILD_SOURCE=\"git:b7337f50fb2a765519e79674ae790c2a7450149e\"\nBUILD_SOURCE_REPO=\"https://github.com/adoptium/temurin-build.git\"\nSOURCE_REPO=\"https://github.com/adoptium/jdk.git\"\nFULL_VERSION=\"25+36-LTS\"\nSEMANTIC_VERSION=\"25+36\"\nBUILD_INFO=\"OS: Linux Version: 6.8.0-1031-azure\"\nJVM_VARIANT=\"Hotspot\"\nJVM_VERSION=\"25+36-LTS\"\nIMAGE_TYPE=\"JDK\"\n"
+    }
+  },
+  "generated_at": "2026-10-19T01:01:08Z",
+  "harness": {
+    "target_toolchain": "0000000000000000",
+    "benchmarks": {
+      "LuceneBench": {
+        "group": "real",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0,
+            "iter0_ms": 0.0,
+            "peak_iteration": 0.0,
+            "peak_ms": 0.0
+          },
+          "target": {
+            "error": "[PLACEHOLDER]"
+          }
+        }
+      },
+      "AllocationChurn": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "ArrayKernels": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "CollectionsBench": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "ConcurrentWork": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "Dispatch": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "Escape": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "Exceptions": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "GameTick": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "IntegerDivision": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "MatrixMultiply": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "NumericLoops": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "Recursion": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "Streams": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "StringWork": {
+        "group": "main",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "VectorKernels": {
+        "group": "vector",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          }
+        },
+        "vs_hotspot": {
+          "ratio": 0.0,
+          "pct": 0.0
+        }
+      },
+      "RuntimeKernels": {
+        "group": "runtime",
+        "workload": "0000000000000000",
+        "engines": {
+          "g1": {
+            "samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_samples": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "steady_ms": 0.0
+          },
+          "target": {
+            "error": "[PLACEHOLDER]"
+          }
+        }
+      }
+    }
+  },
+  "vs_hotspot": {
+    "groups": {
+      "main": {
+        "ratio": 0.0,
+        "pct": 0.0,
+        "n": 0
+      },
+      "micro": {
+        "ratio": 0.0,
+        "pct": 0.0,
+        "n": 0
+      },
+      "vector": {
+        "ratio": 0.0,
+        "pct": 0.0,
+        "n": 0
+      }
+    },
+    "startup": {
+      "ratio": 0.0,
+      "pct": 0.0
+    },
+    "benchmarks": {
+      "AllocationChurn": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "ArrayKernels": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "CollectionsBench": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "ConcurrentWork": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "Dispatch": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "Escape": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "Exceptions": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "GameTick": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "IntegerDivision": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "MatrixMultiply": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "NumericLoops": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "Recursion": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "Streams": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "StringWork": {
+        "ratio": 0.0,
+        "pct": 0.0
+      },
+      "VectorKernels": {
+        "ratio": 0.0,
+        "pct": 0.0
+      }
+    }
+  },
+  "startup_ms": {
+    "median": 0.0,
+    "n": 0,
+    "lower_is_better": true,
+    "samples": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  }
+}

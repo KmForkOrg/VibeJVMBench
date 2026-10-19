@@ -1,0 +1,1197 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VibeJVMBench Results</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #121211;
+      --surface: #1a1a19;
+      --surface-2: #232321;
+      --border: #2f2f2c;
+      --text: #f0efec;
+      --text-2: #c3c2b7;
+      --text-3: #8f8e86;
+      --faster: #3987e5;
+      --slower: #d95926;
+      --midline: #f0efec;
+      --grid: #2a2a27;
+      --best-bg: #1b2a3d;
+      --select-bg: #1f2632;
+      --gold: #e0a52a;
+      --silver: #a9a9a2;
+      --bronze: #c97c50;
+      --shadow: none;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+
+    a {
+      color: var(--faster);
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.9em;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 16px 64px;
+    }
+
+    header.top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 26px;
+      line-height: 1.2;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+
+    .legend-key {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+      font-size: 13px;
+      color: var(--text-2);
+      margin: 0 0 12px;
+    }
+
+    .legend-key span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th:nth-child(1),
+    td:nth-child(1),
+    th:nth-child(2),
+    td:nth-child(2) {
+      text-align: left;
+    }
+
+    thead th {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+    }
+
+    thead th.sortable {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    thead th.sortable:hover {
+      color: var(--text);
+    }
+
+    thead th .arrow {
+      display: inline-block;
+      width: 1em;
+      color: var(--text);
+    }
+
+    thead th .group-label {
+      display: block;
+      font-size: 10px;
+      color: var(--text-3);
+      font-weight: 500;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr:last-child {
+      border-bottom: 0;
+    }
+
+    tbody tr.target-row {
+      cursor: pointer;
+    }
+
+    tbody tr.target-row:hover {
+      background: var(--surface-2);
+    }
+
+    tbody tr.selected {
+      background: var(--select-bg);
+    }
+
+    tbody tr.selected:hover {
+      background: var(--select-bg);
+    }
+
+    td.rank {
+      width: 44px;
+      color: var(--text-3);
+      font-weight: 600;
+    }
+
+    .medal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .medal.m1 {
+      background: var(--gold);
+    }
+
+    .medal.m2 {
+      background: var(--silver);
+    }
+
+    .medal.m3 {
+      background: var(--bronze);
+    }
+
+    td.name .tname {
+      font-weight: 600;
+    }
+
+    td.name .tsub {
+      display: block;
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    td.val {
+      min-width: 104px;
+    }
+
+    .cell {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .mini {
+      position: relative;
+      width: 36px;
+      height: 8px;
+      flex: none;
+    }
+
+    .mini::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -2px;
+      bottom: -2px;
+      width: 1px;
+      background: var(--text-3);
+    }
+
+    .mini i {
+      position: absolute;
+      top: 0;
+      height: 8px;
+      display: block;
+    }
+
+    .mini i.pos {
+      left: 50%;
+      background: var(--faster);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .mini i.neg {
+      right: 50%;
+      background: var(--slower);
+      border-radius: 2px 0 0 2px;
+    }
+
+    td.best {
+      background: var(--best-bg);
+    }
+
+    td.best .num {
+      font-weight: 700;
+    }
+
+    .na {
+      color: var(--text-3);
+    }
+
+    .hint {
+      color: var(--text-3);
+      font-size: 13px;
+      margin: 10px 2px 28px;
+    }
+
+    #detail {
+      scroll-margin-top: 16px;
+    }
+
+    .detail-head {
+      position: relative;
+      padding: 20px 48px 4px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .detail-head h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .detail-head .desc {
+      color: var(--text-2);
+      margin: 4px 0 0;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+      font-size: 13px;
+      color: var(--text-3);
+      margin-top: 8px;
+    }
+
+    .meta b {
+      color: var(--text-2);
+      font-weight: 500;
+    }
+
+    .run-select {
+      font: inherit;
+      font-size: 13px;
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 14px;
+      right: 12px;
+      border: 0;
+      background: none;
+      color: var(--text-3);
+      font: inherit;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 2px 6px;
+    }
+
+    .close-btn:hover {
+      color: var(--text);
+    }
+
+    section.chart {
+      padding: 16px 20px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    section.chart:first-of-type {
+      border-top: 0;
+    }
+
+    section.chart h3 {
+      margin: 0 0 2px;
+      font-size: 15px;
+    }
+
+    section.chart .sub {
+      margin: 0 0 12px;
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    .dv {
+      --label-w: 170px;
+    }
+
+    .dv-axis,
+    .dv-row {
+      display: grid;
+      grid-template-columns: var(--label-w) 1fr;
+      align-items: center;
+    }
+
+    .dv-axis {
+      height: 22px;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .dv-axis .track {
+      position: relative;
+      height: 100%;
+    }
+
+    .dv-axis .tick {
+      position: absolute;
+      top: 2px;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+
+    .dv-axis .tick.zero {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .dv-axis .tick.edge-l {
+      transform: none;
+    }
+
+    .dv-axis .tick.edge-r {
+      transform: translateX(-100%);
+    }
+
+    .dv-body {
+      position: relative;
+    }
+
+    .dv-grid {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: var(--label-w);
+      pointer-events: none;
+    }
+
+    .dv-grid i {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--grid);
+    }
+
+    .dv-grid i.zero {
+      width: 2px;
+      margin-left: -1px;
+      background: var(--midline);
+      z-index: 2;
+    }
+
+    .dv-row {
+      min-height: 28px;
+    }
+
+    .dv-row .lbl {
+      font-size: 13px;
+      color: var(--text-2);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-right: 10px;
+    }
+
+    .dv-row.summary .lbl {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .dv-row .track {
+      position: relative;
+      height: 28px;
+    }
+
+    .dv-row .hit {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      cursor: default;
+    }
+
+    .dv-row:hover .track {
+      background: var(--surface-2);
+    }
+
+    .bar {
+      position: absolute;
+      top: 7px;
+      height: 14px;
+      z-index: 1;
+    }
+
+    .bar.pos {
+      background: var(--faster);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .bar.neg {
+      background: var(--slower);
+      border-radius: 4px 0 0 4px;
+    }
+
+    .dv-row.summary .bar {
+      top: 5px;
+      height: 18px;
+    }
+
+    .bar-val {
+      position: absolute;
+      top: 5px;
+      font-size: 12px;
+      color: var(--text);
+      white-space: nowrap;
+      z-index: 2;
+      line-height: 18px;
+    }
+
+    .bar-val.inside-pos {
+      color: #fff;
+      transform: translateX(-100%);
+      padding-right: 6px;
+    }
+
+    .bar-val.inside-neg {
+      color: #fff;
+      padding-left: 6px;
+    }
+
+    .dv-row.failed .track::after {
+      content: attr(data-msg);
+      position: absolute;
+      left: 50%;
+      top: 4px;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--text-3);
+      background: var(--surface-2);
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      padding: 0 8px;
+      line-height: 18px;
+      z-index: 2;
+    }
+
+    .dv-group {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-3);
+      padding: 10px 0 2px;
+    }
+
+    .dir-labels {
+      display: grid;
+      grid-template-columns: var(--label-w) 1fr 1fr;
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    .dir-labels span:nth-child(2) {
+      text-align: left;
+      padding-left: 4px;
+    }
+
+    .dir-labels span:nth-child(3) {
+      text-align: right;
+      padding-right: 4px;
+    }
+
+    #tooltip {
+      position: fixed;
+      z-index: 50;
+      pointer-events: none;
+      max-width: 340px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: 0 6px 24px rgb(0 0 0 / 0.18);
+      font-size: 13px;
+      line-height: 1.45;
+      opacity: 0;
+      transition: opacity 0.08s;
+    }
+
+    #tooltip.show {
+      opacity: 1;
+    }
+
+    #tooltip .tt-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    #tooltip .tt-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--text-2);
+    }
+
+    #tooltip .tt-row b {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    #tooltip pre {
+      margin: 4px 0 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 11px;
+      color: var(--text-2);
+      max-height: 140px;
+      overflow: hidden;
+    }
+
+    .status {
+      padding: 28px 20px;
+      color: var(--text-2);
+    }
+
+    .status code {
+      background: var(--surface-2);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        padding-top: 20px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .dv {
+        --label-w: 108px;
+      }
+
+      .dv-row .lbl {
+        font-size: 12px;
+      }
+
+      .dv-axis .tick:not(.zero):not(.edge-l):not(.edge-r) {
+        display: none;
+      }
+
+      section.chart,
+      .detail-head {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      th,
+      td {
+        padding: 8px 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="top">
+      <h1>VibeJVMBench</h1>
+    </header>
+
+    <div class="legend-key" aria-hidden="true">
+      <span><i class="swatch" style="background:var(--faster)"></i>Faster than HotSpot G1</span>
+      <span><i class="swatch" style="background:var(--slower)"></i>Slower than HotSpot G1</span>
+      <span><i class="swatch" style="background:var(--best-bg);outline:1px solid var(--faster)"></i>Best in
+        column</span>
+    </div>
+
+    <div class="card">
+      <div class="table-scroll" id="board">
+        <div class="status">Loading results from <code>jvms/</code>…</div>
+      </div>
+    </div>
+    <p class="hint">Click a target to see how it does on each benchmark. Click a column header to sort by it.</p>
+
+    <div class="card" id="detail" hidden></div>
+
+  </div>
+  <div id="tooltip" role="tooltip"></div>
+
+  <script>
+    "use strict";
+
+    const REPO = { owner: "KmForkOrg", repo: "VibeJVMBench", branch: "HEAD" };
+
+    const MC_HEADLINE = { worldgen: "chunks_per_s", tick: "ms_per_tick", datagen: "datagen_s", upgrade: "upgrade_s" };
+    const MC_LABEL = { worldgen: "Worldgen", tick: "Tick", datagen: "Datagen", upgrade: "Upgrade" };
+    const GROUP_ORDER = ["main", "vector", "runtime", "real", "suites"];
+    const GROUP_LABEL = {
+      main: "Microbenchmarks", vector: "Vector API", runtime: "Runtime class loading", real: "Real programs", suites: "Suites",
+    };
+
+    const state = { targets: [], sort: { key: "overall", dir: -1 }, selected: null, runIndex: 0 };
+
+    async function fetchJson(url) {
+      const res = await fetch(url, { cache: "no-cache" });
+      if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
+      return res.json();
+    }
+
+    async function discover() {
+      try {
+        const list = await fetchJson("jvms/index.json");
+        if (Array.isArray(list) && list.length) return list.map(p => p.replace(/^\.?\//, ""));
+      } catch (_) { }
+
+      try {
+        const files = await fromListing();
+        if (files.length) return files;
+      } catch (_) { }
+
+      return fromGitHub();
+    }
+
+    async function listingLinks(url) {
+      const res = await fetch(url, { cache: "no-cache" });
+      if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
+      if (!(res.headers.get("content-type") || "").includes("html")) return [];
+      const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+      const base = new URL(url, location.href);
+      return [...doc.querySelectorAll("a[href]")]
+        .map(a => new URL(a.getAttribute("href"), base))
+        .filter(u => u.origin === base.origin && u.pathname.startsWith(base.pathname) && u.pathname !== base.pathname);
+    }
+
+    async function fromListing() {
+      const dirs = (await listingLinks("jvms/")).filter(u => u.pathname.endsWith("/"));
+      const nested = await Promise.all(dirs.map(d => listingLinks(d.href).catch(() => [])));
+      const root = new URL("./", location.href).pathname;
+      return nested.flat()
+        .filter(u => u.pathname.endsWith(".json"))
+        .map(u => decodeURIComponent(u.pathname.slice(root.length)));
+    }
+
+    async function fromGitHub() {
+      let { owner, repo } = REPO;
+      const host = location.hostname.match(/^([^.]+)\.github\.io$/);
+      if (host) {
+        owner = host[1];
+        repo = location.pathname.split("/").filter(Boolean)[0] || `${owner}.github.io`;
+      }
+      const tree = await fetchJson(`https://api.github.com/repos/${owner}/${repo}/git/trees/${REPO.branch}?recursive=1`);
+      const files = tree.tree.map(t => t.path).filter(p => /^jvms\/[^/]+\/[^/]+\.json$/.test(p));
+      if (host) return files;
+      return files.map(p => `https://raw.githubusercontent.com/${owner}/${repo}/${REPO.branch}/${p}`);
+    }
+
+    function median(xs) {
+      if (!xs || !xs.length) return null;
+      const s = [...xs].sort((a, b) => a - b), m = s.length >> 1;
+      return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+    }
+
+    function geomean(ratios) {
+      const rs = ratios.filter(r => r > 0);
+      if (!rs.length) return null;
+      const ratio = Math.exp(rs.reduce((a, r) => a + Math.log(r), 0) / rs.length);
+      return { ratio, pct: (ratio - 1) * 100, n: rs.length };
+    }
+
+    function normalize(doc, path) {
+      if (doc.schema_version !== 1) throw new Error(`${path}: not a schema_version 1 submission`);
+      const vs = doc.vs_hotspot || {};
+      const groups = vs.groups || {};
+      const harness = (doc.harness && doc.harness.benchmarks) || {};
+      const rel = vs.benchmarks || {};
+
+      const benchmarks = [...new Set([...Object.keys(harness), ...Object.keys(rel)])].map(name => {
+        const h = harness[name] || {};
+        const eng = h.engines || {};
+        const t = eng.target || {}, g = eng.g1 || {};
+        return {
+          name,
+          group: h.group || "main",
+          rel: rel[name] || null,
+          error: t.error || null,
+          hotspotError: g.error || null,
+          targetMs: t.steady_ms ?? null,
+          hotspotMs: g.steady_ms ?? null,
+        };
+      });
+
+      const scenarios = {};
+      for (const [name, sc] of Object.entries(doc.scenarios || {})) {
+        const hs = (sc.reference_metrics || {})["hotspot-g1"] || {};
+        const tm = sc.target_metrics || {};
+        const metrics = Object.entries(sc.vs_hotspot || {}).map(([metric, r]) => ({
+          name: metric,
+          rel: r,
+          target: tm[metric] || null,
+          hotspot: hs[metric] || null,
+        }));
+        const headlineName = MC_HEADLINE[name] in (sc.vs_hotspot || {}) ? MC_HEADLINE[name] : (metrics[0] || {}).name;
+        scenarios[name] = {
+          metrics,
+          failed: sc.failed_runs || 0,
+          headline: headlineName ? { name: headlineName, rel: sc.vs_hotspot[headlineName] } : null,
+        };
+      }
+
+      const startupMs = doc.startup_ms ? doc.startup_ms.median : null;
+      const hsStartup = vs.startup && startupMs != null ? startupMs * vs.startup.ratio : null;
+
+      const run = {
+        path,
+        name: doc.target.name,
+        when: new Date(doc.generated_at),
+        target: doc.target,
+        machine: doc.machine || {},
+        harnessCommit: doc.harness_commit || null,
+        groups,
+        startup: vs.startup || null,
+        startupMs,
+        hsStartupMs: hsStartup,
+        benchmarks,
+        scenarios,
+      };
+      run.overall = geomean([
+        groups.micro && groups.micro.ratio,
+        groups.real && groups.real.ratio,
+        ...Object.values(scenarios).map(s => s.headline && s.headline.rel.ratio),
+      ].filter(Boolean));
+      return run;
+    }
+
+    async function load() {
+      const paths = await discover();
+      const docs = await Promise.all(paths.map(async p => {
+        try { return normalize(await fetchJson(p), p); }
+        catch (e) { console.warn("skipping", p, e); return null; }
+      }));
+      const byName = new Map();
+      for (const run of docs.filter(Boolean)) {
+        if (!byName.has(run.name)) byName.set(run.name, []);
+        byName.get(run.name).push(run);
+      }
+      state.targets = [...byName.entries()].map(([name, runs]) => {
+        runs.sort((a, b) => b.when - a.when);
+        return { name, runs };
+      });
+    }
+
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    function fmtPct(pct) {
+      const a = Math.abs(pct);
+      const digits = a >= 100 ? 0 : a >= 10 ? 1 : 2;
+      const s = a.toFixed(digits);
+      if (Number(s) === 0) return "0%";
+      return (pct > 0 ? "+" : "−") + s + "%";
+    }
+
+    function fmtTimes(ratio) {
+      if (ratio >= 1) return `${ratio >= 10 ? ratio.toFixed(1) : ratio.toFixed(2)}× faster`;
+      const inv = 1 / ratio;
+      return `${inv >= 10 ? inv.toFixed(1) : inv.toFixed(2)}× slower`;
+    }
+
+    function fmtNum(v, unit = "") {
+      if (v == null) return "—";
+      const a = Math.abs(v);
+      const s = a >= 1000 ? v.toFixed(0) : a >= 100 ? v.toFixed(1) : a >= 1 ? v.toFixed(2) : v.toPrecision(3);
+      return s + unit;
+    }
+
+    function fmtDate(d) {
+      return isNaN(d) ? "unknown date" : d.toISOString().replace("T", " ").replace(/:\d\d\.\d+Z$/, " UTC");
+    }
+
+    function columns() {
+      const latest = state.targets.map(t => t.runs[0]);
+      const any = f => latest.some(r => f(r) != null);
+      const cols = [
+        { key: "overall", label: "Overall", get: r => r.overall },
+        { key: "micro", label: "Micro", get: r => r.groups.micro },
+        { key: "real", label: "Real", get: r => r.groups.real },
+        { key: "startup", label: "Startup", get: r => r.startup },
+      ];
+      const scen = new Set(latest.flatMap(r => Object.keys(r.scenarios)));
+      const order = Object.keys(MC_HEADLINE);
+      [...scen].sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99)).forEach(s => {
+        cols.push({ key: "mc:" + s, label: MC_LABEL[s] || s, group: "Minecraft", get: r => r.scenarios[s] && r.scenarios[s].headline && r.scenarios[s].headline.rel });
+      });
+      return cols.filter(c => c.key === "overall" || any(c.get));
+    }
+
+    function miniBar(ratio, maxLog) {
+      const l = Math.log2(ratio);
+      const w = Math.min(Math.abs(l) / maxLog, 1) * 50;
+      return `<span class="mini"><i class="${l >= 0 ? "pos" : "neg"}" style="width:${w}%"></i></span>`;
+    }
+
+    function renderBoard() {
+      const el = document.getElementById("board");
+      if (!state.targets.length) {
+        el.innerHTML = `<div class="status">No submissions found under <code>jvms/</code>.</div>`;
+        return;
+      }
+      const cols = columns();
+      const rows = state.targets.map(t => ({ target: t, run: t.runs[0] }));
+      const sortCol = cols.find(c => c.key === state.sort.key) || cols[0];
+      const val = r => { const v = sortCol.get(r.run); return v ? v.ratio : null; };
+      rows.sort((a, b) => {
+        const va = val(a), vb = val(b);
+        if (va == null && vb == null) return a.target.name.localeCompare(b.target.name);
+        if (va == null) return 1;
+        if (vb == null) return -1;
+        return (va - vb) * state.sort.dir;
+      });
+
+      // Best value per column (highest ratio = best, since ratio > 1 always means "better than HotSpot").
+      const best = {};
+      for (const c of cols) {
+        let top = null;
+        for (const r of rows) { const v = c.get(r.run); if (v && (top == null || v.ratio > top)) top = v.ratio; }
+        best[c.key] = top;
+      }
+      // Mini bars are scaled per column, so a 20× startup win doesn't flatten the micro column.
+      const maxLog = {};
+      for (const c of cols) maxLog[c.key] = Math.max(0.5, ...rows.map(r => { const v = c.get(r.run); return v ? Math.abs(Math.log2(v.ratio)) : 0; }));
+      const ranked = rows.filter(r => val(r) != null);
+
+      const head = `<tr><th>#</th><th>Target</th>${cols.map(c => {
+        const on = c.key === state.sort.key;
+        const arrow = on ? (state.sort.dir < 0 ? "↓" : "↑") : "";
+        return `<th class="sortable" data-key="${c.key}" aria-sort="${on ? (state.sort.dir < 0 ? "descending" : "ascending") : "none"}">`
+          + `${c.group ? `<span class="group-label">${esc(c.group)}</span>` : ""}${esc(c.label)}<span class="arrow">${arrow}</span></th>`;
+      }).join("")}</tr>`;
+
+      const body = rows.map(r => {
+        const rankIdx = ranked.indexOf(r);
+        const rank = rankIdx < 0 ? "–" : state.sort.dir < 0 && rankIdx < 3
+          ? `<span class="medal m${rankIdx + 1}">${rankIdx + 1}</span>` : rankIdx + 1;
+        const t = r.run.target;
+        const sub = [t.version, r.run.machine.cpu || r.run.machine.hostname].filter(Boolean).map(esc).join(" · ");
+        const cells = cols.map(c => {
+          const v = c.get(r.run);
+          if (!v) return `<td class="val"><span class="na">—</span></td>`;
+          const isBest = rows.length > 1 && v.ratio === best[c.key] && v.ratio > 1;
+          return `<td class="val${isBest ? " best" : ""}" title="${esc(fmtTimes(v.ratio))}"><span class="cell">`
+            + `<span class="num">${fmtPct(v.pct)}</span>${miniBar(v.ratio, maxLog[c.key])}</span></td>`;
+        }).join("");
+        return `<tr class="target-row${state.selected === r.target.name ? " selected" : ""}" data-name="${esc(r.target.name)}" tabindex="0">`
+          + `<td class="rank">${rank}</td><td class="name"><span class="tname">${esc(r.target.name)}</span>`
+          + `${sub ? `<span class="tsub">${sub}</span>` : ""}</td>${cells}</tr>`;
+      }).join("");
+
+      el.innerHTML = `<table><thead>${head}</thead><tbody>${body}</tbody></table>`;
+
+      el.querySelectorAll("th.sortable").forEach(th => th.addEventListener("click", () => {
+        const key = th.dataset.key;
+        state.sort = key === state.sort.key ? { key, dir: -state.sort.dir } : { key, dir: -1 };
+        renderBoard();
+      }));
+      el.querySelectorAll("tr.target-row").forEach(tr => {
+        const open = () => select(tr.dataset.name === state.selected ? null : tr.dataset.name, true);
+        tr.addEventListener("click", open);
+        tr.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+      });
+    }
+
+    function divergingChart(rows) {
+      const logs = rows.filter(r => r.rel).map(r => Math.abs(Math.log2(r.rel.ratio)));
+      const span = Math.max(1, Math.ceil(Math.max(0, ...logs) * 1.08 * 2) / 2);
+      const pos = l => 50 + (Math.max(-span, Math.min(span, l)) / span) * 50;
+      const step = span > 6 ? 2 : span > 3 ? 1 : span > 1.5 ? 0.5 : 0.5;
+      const ticks = [];
+      for (let k = -Math.floor(span / step) * step; k <= span + 1e-9; k += step) ticks.push(+k.toFixed(3));
+      const tickLabel = k => {
+        if (k === 0) return "HotSpot";
+        const x = Math.pow(2, Math.abs(k));
+        const s = Number.isInteger(x) ? x : x.toFixed(1);
+        return k > 0 ? `${s}× faster` : `${s}× slower`;
+      };
+
+      const axis = `<div class="dv-axis"><span></span><div class="track">${ticks.map((k, i) => {
+        const edge = i === 0 && pos(k) < 8 ? " edge-l" : i === ticks.length - 1 && pos(k) > 92 ? " edge-r" : "";
+        return `<span class="tick${k === 0 ? " zero" : ""}${edge}" style="left:${pos(k)}%">${tickLabel(k)}</span>`;
+      }).join("")}</div></div>`;
+      const grid = `<div class="dv-grid">${ticks.map(k => `<i class="${k === 0 ? "zero" : ""}" style="left:${pos(k)}%"></i>`).join("")}</div>`;
+
+      let lastGroup = null;
+      const body = rows.map((r, i) => {
+        let out = "";
+        if (r.group && r.group !== lastGroup) { out += `<div class="dv-group">${esc(r.group)}</div>`; lastGroup = r.group; }
+        const tipAttr = `data-tip="${i}"`;
+        if (!r.rel) {
+          return out + `<div class="dv-row failed"><span class="lbl" title="${esc(r.label)}">${esc(r.label)}</span>`
+            + `<div class="track" data-msg="${esc(r.failed || "no comparison")}"><span class="hit" ${tipAttr}></span></div></div>`;
+        }
+        const l = Math.log2(r.rel.ratio);
+        const p = pos(l);
+        const w = Math.abs(p - 50);
+        const bar = l >= 0
+          ? `<span class="bar pos" style="left:50%;width:${w}%"></span>`
+          : `<span class="bar neg" style="right:50%;width:${w}%"></span>`;
+        // Put the value outside the bar end; if it would run off the edge, put it inside.
+        const inside = w > 38;
+        const val = l >= 0
+          ? `<span class="bar-val${inside ? " inside-pos" : ""}" style="left:calc(${p}% + ${inside ? 0 : 6}px)">${fmtPct(r.rel.pct)}</span>`
+          : `<span class="bar-val${inside ? " inside-neg" : ""}" style="${inside ? `left:${p}%` : `right:calc(${100 - p}% + 6px)`}">${fmtPct(r.rel.pct)}</span>`;
+        return out + `<div class="dv-row${r.summary ? " summary" : ""}"><span class="lbl" title="${esc(r.label)}">${esc(r.label)}</span>`
+          + `<div class="track">${bar}${val}<span class="hit" ${tipAttr}></span></div></div>`;
+      }).join("");
+
+      return {
+        html: `<div class="dv">${axis}<div class="dv-body">${grid}${body}</div>`
+          + `<div class="dir-labels"><span></span><span>← slower than HotSpot</span><span>faster than HotSpot →</span></div></div>`, rows
+      };
+    }
+
+    function relTip(title, rel, extra = []) {
+      const lines = [];
+      if (rel) {
+        lines.push(["vs HotSpot G1", `<b>${fmtPct(rel.pct)}</b>`]);
+        lines.push(["", fmtTimes(rel.ratio)]);
+        if (rel.n) lines.push(["combines", `${rel.n} benchmark${rel.n === 1 ? "" : "s"}`]);
+      }
+      return { title, lines: lines.concat(extra) };
+    }
+
+    function renderDetail() {
+      const box = document.getElementById("detail");
+      const t = state.targets.find(x => x.name === state.selected);
+      if (!t) { box.hidden = true; box.innerHTML = ""; return; }
+      const run = t.runs[Math.min(state.runIndex, t.runs.length - 1)];
+      const tg = run.target, m = run.machine;
+
+      const meta = [
+        ["Run", fmtDate(run.when)],
+        ["Machine", [m.cpu, m.memory_gb && `${m.memory_gb} GB`, [m.os, m.arch].filter(Boolean).join("/")].filter(Boolean).join(" · ") || m.hostname],
+        tg.version && ["Version", tg.version],
+        ["Kind", tg.is_java_launcher ? "java launcher" : tg.is_java_launcher === false ? "compiler / packager" : null],
+        run.harnessCommit && ["Harness", run.harnessCommit],
+      ].filter(x => x && x[1]);
+
+      const runPicker = t.runs.length > 1
+        ? `<select class="run-select" id="runSelect" aria-label="Choose run">${t.runs.map((r, i) =>
+          `<option value="${i}"${i === state.runIndex ? " selected" : ""}>${i === 0 ? "Latest: " : ""}${esc(fmtDate(r.when))}</option>`).join("")}</select>`
+        : "";
+
+      const charts = [];
+
+      // Summary
+      const summary = [];
+      if (run.overall) summary.push({ label: "Overall", rel: run.overall, summary: true, tip: relTip("Overall", run.overall) });
+      for (const g of ["micro", ...GROUP_ORDER]) {
+        const v = run.groups[g];
+        if (!v) continue;
+        const label = g === "micro" ? "Micro (all)" : GROUP_LABEL[g] || g;
+        summary.push({ label, rel: v, summary: g === "micro" || g === "real", tip: relTip(label, v) });
+      }
+      for (const [name, sc] of Object.entries(run.scenarios)) {
+        if (!sc.headline) continue;
+        const label = `MC ${MC_LABEL[name] || name}`;
+        summary.push({ label, rel: sc.headline.rel, tip: relTip(label, sc.headline.rel, [["metric", sc.headline.name]]) });
+      }
+      if (summary.length) charts.push({ title: "Summary", sub: "Geometric means per group. Startup has its own chart below.", rows: summary });
+
+      // Per-benchmark
+      const benches = [...run.benchmarks].sort((a, b) =>
+        (GROUP_ORDER.indexOf(a.group) + 1 || 99) - (GROUP_ORDER.indexOf(b.group) + 1 || 99)
+        || (b.rel ? b.rel.ratio : -1) - (a.rel ? a.rel.ratio : -1));
+      if (benches.length) {
+        charts.push({
+          title: "Benchmarks",
+          sub: "Steady-state time per benchmark. Hover or tap a bar for the raw times.",
+          rows: benches.map(b => {
+            const extra = [];
+            if (b.targetMs != null) extra.push(["target", fmtNum(b.targetMs, " ms")]);
+            if (b.hotspotMs != null) extra.push(["HotSpot G1", fmtNum(b.hotspotMs, " ms")]);
+            const tip = relTip(b.name, b.rel, extra);
+            let failed = null;
+            if (!b.rel) {
+              failed = b.error ? "target failed" : b.hotspotError ? "HotSpot failed" : "no comparison";
+              tip.error = b.error || b.hotspotError;
+            }
+            return { label: b.name, rel: b.rel, group: GROUP_LABEL[b.group] || b.group, failed, tip };
+          }),
+        });
+      }
+
+      // Startup
+      if (run.startup) {
+        charts.push({
+          title: "Startup",
+          sub: "Median wall-clock time to start a process.",
+          rows: [{
+            label: "Process start", rel: run.startup, summary: true,
+            tip: relTip("Startup", run.startup, [["target", fmtNum(run.startupMs, " ms")], ["HotSpot G1", fmtNum(run.hsStartupMs, " ms")]]),
+          }],
+        });
+      }
+
+      // Minecraft scenarios
+      for (const [name, sc] of Object.entries(run.scenarios)) {
+        if (!sc.metrics.length) continue;
+        const headline = sc.headline && sc.headline.name;
+        const rows = [...sc.metrics].sort((a, b) => (b.name === headline) - (a.name === headline)).map(mt => {
+          const lower = (mt.target || mt.hotspot || {}).lower_is_better;
+          const extra = [];
+          if (mt.target) extra.push(["target", fmtNum(mt.target.median)]);
+          if (mt.hotspot) extra.push(["HotSpot G1", fmtNum(mt.hotspot.median)]);
+          if (lower != null) extra.push(["", lower ? "lower is better" : "higher is better"]);
+          return { label: mt.name, rel: mt.rel, summary: mt.name === headline, tip: relTip(mt.name, mt.rel, extra) };
+        });
+        charts.push({
+          title: `Minecraft: ${MC_LABEL[name] || name}`,
+          sub: `Median of the runs per metric. Bars always point right when the target did better, whatever direction the metric runs.`
+            + (sc.failed ? ` ${sc.failed} target run${sc.failed === 1 ? "" : "s"} failed.` : ""),
+          rows,
+        });
+      }
+
+      const tips = [];
+      const sections = charts.map(c => {
+        const offset = tips.length;
+        c.rows.forEach(r => tips.push(r.tip));
+        const { html } = divergingChart(c.rows);
+        return `<section class="chart"><h3>${esc(c.title)}</h3><p class="sub">${c.sub}</p>`
+          + html.replace(/data-tip="(\d+)"/g, (_, i) => `data-tip="${+i + offset}"`) + `</section>`;
+      }).join("");
+
+      box.innerHTML = `<div class="detail-head"><div><h2>${esc(tg.name)}</h2>`
+        + `${tg.description ? `<p class="desc">${esc(tg.description)}</p>` : ""}`
+        + `<div class="meta">${meta.map(([k, v]) => `<span>${k} <b>${esc(v)}</b></span>`).join("")}`
+        + `${tg.source_url ? `<span><a href="${esc(tg.source_url)}" rel="noopener" target="_blank">source</a></span>` : ""}`
+        + `<span><a href="${esc(run.path)}" target="_blank">raw JSON</a></span></div></div>`
+        + `<div style="display:flex;gap:8px;align-items:center">${runPicker}<button class="close-btn" id="closeDetail" aria-label="Close">×</button></div></div>`
+        + (sections || `<div class="status">This run has no HotSpot comparisons.</div>`);
+      box.hidden = false;
+
+      box.querySelector("#closeDetail").addEventListener("click", () => select(null));
+      const rs = box.querySelector("#runSelect");
+      if (rs) rs.addEventListener("change", () => { state.runIndex = +rs.value; renderDetail(); });
+      bindTips(box, tips);
+    }
+
+    const tooltip = document.getElementById("tooltip");
+    function showTip(tip, x, y) {
+      tooltip.innerHTML = `<div class="tt-title">${esc(tip.title)}</div>`
+        + tip.lines.map(([k, v]) => `<div class="tt-row"><span>${esc(k)}</span><span>${v.startsWith("<b>") ? v : esc(v)}</span></div>`).join("")
+        + (tip.error ? `<pre>${esc(tip.error.trim().split("\n").slice(0, 8).join("\n"))}</pre>` : "");
+      tooltip.classList.add("show");
+      const r = tooltip.getBoundingClientRect();
+      let left = x + 14, top = y + 14;
+      if (left + r.width > innerWidth - 8) left = Math.max(8, x - r.width - 14);
+      if (top + r.height > innerHeight - 8) top = Math.max(8, y - r.height - 14);
+      tooltip.style.left = left + "px";
+      tooltip.style.top = top + "px";
+    }
+    function hideTip() { tooltip.classList.remove("show"); }
+    function bindTips(root, tips) {
+      root.querySelectorAll("[data-tip]").forEach(el => {
+        const tip = tips[+el.dataset.tip];
+        el.addEventListener("pointermove", e => showTip(tip, e.clientX, e.clientY));
+        el.addEventListener("pointerleave", hideTip);
+        el.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse") showTip(tip, e.clientX, e.clientY); });
+      });
+    }
+    addEventListener("scroll", hideTip, { passive: true });
+
+    function select(name, scroll) {
+      state.selected = name;
+      state.runIndex = 0;
+      history.replaceState(null, "", name ? "#" + encodeURIComponent(name) : location.pathname + location.search);
+      renderBoard();
+      renderDetail();
+      if (name && scroll) document.getElementById("detail").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    (async function main() {
+      try {
+        await load();
+      } catch (e) {
+        const local = location.protocol === "file:";
+        document.getElementById("board").innerHTML = `<div class="status">Couldn't load results: ${esc(e.message)}.`
+          + (local ? ` Browsers block <code>fetch</code> from <code>file://</code> pages. Serve the repository root instead,
+        for example <code>python3 -m http.server</code>, and open <code>http://localhost:8000/</code>.` : "") + `</div>`;
+        return;
+      }
+      renderBoard();
+      const hash = decodeURIComponent(location.hash.slice(1));
+      if (hash && state.targets.some(t => t.name === hash)) select(hash, false);
+    })();
+  </script>
+</body>
+
+</html>
