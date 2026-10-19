@@ -1,0 +1,81 @@
+name: Check submissions
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "jvms/**/*.json"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate submitted files
+        id: check
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          git fetch --no-tags origin "pull/$PR/head"
+          files="$RUNNER_TEMP/submissions"
+          mkdir -p "$files"
+          args=()
+          i=0
+          while IFS= read -r -d '' path; do
+            case "$path" in jvms/example/*) continue ;; esac
+            i=$((i + 1))
+            git show "FETCH_HEAD:$path" > "$files/$i.json"
+            args+=("$path" "$files/$i.json")
+          done < <(git diff -z --name-only --diff-filter=AMR "$BASE...FETCH_HEAD" -- 'jvms/*.json')
+          if [ ${#args[@]} -eq 0 ]; then
+            echo "No submission files to check."
+            exit 0
+          fi
+          status=0
+          python3 -I bench/check_submissions.py "${args[@]}" > "$RUNNER_TEMP/errors.md" || status=$?
+          cat "$RUNNER_TEMP/errors.md"
+          echo "failed=$([ $status -ne 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Ping the author
+        if: steps.check.outputs.failed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          {
+            echo "<!-- check-submissions -->"
+            echo "@$AUTHOR, your result file doesn't match \`schema/result.schema.json\`:"
+            echo
+            cat "$RUNNER_TEMP/errors.md"
+            echo
+            echo "Usually this means the raw dump from \`bench/run.py --json\` (or \`target/bench-work/bench/results.json\`) was committed directly. That file is internal; please generate the submission with the export command instead and commit the file it prints, without renaming or editing it:"
+            echo
+            echo '```sh'
+            echo 'python3 bench/export.py --name <target-name> \'
+            echo '    --bench target/bench-work/bench/results.json \'
+            echo '    --mc target/mc/results.json \'
+            echo '    --version "<commit or tag>" --description "<one line>" --source-url "<url>" \'
+            echo '    --harness-commit "$(git rev-parse --short HEAD)"'
+            echo '```'
+            echo
+            echo "Pass only the parts you ran (\`--bench\` and/or \`--mc\`). See section 3 of the README."
+          } > "$RUNNER_TEMP/comment.md"
+          gh pr comment "$PR" --edit-last --create-if-none --body-file "$RUNNER_TEMP/comment.md"
+          exit 1
